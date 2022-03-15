@@ -12,7 +12,11 @@ public partial class CameraRenderer
 
     CullingResults cullingResults;
 
-    static ShaderTagId unlitShaderTag = new ShaderTagId("SRPDefaultUnlit");
+    static ShaderTagId unlitShaderTag = new ShaderTagId("SRPDefaultUnlit"),
+    litShaderTag = new ShaderTagId("CustomLit");
+    Lighting lighting = new Lighting();
+
+
 
 
 
@@ -30,6 +34,7 @@ public partial class CameraRenderer
         }
 
         Setup();
+        lighting.Setup(context, cullingResults);
         DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
         DrawUnsupportedShaders();
         DrawGizmos();
@@ -54,6 +59,8 @@ public partial class CameraRenderer
         // draw opaques
         var sortingSettings = new SortingSettings(camera) { criteria = SortingCriteria.CommonOpaque };
         var drawingSettings = new DrawingSettings(unlitShaderTag, sortingSettings) { enableDynamicBatching = useDynamicBatching, enableInstancing = useGPUInstancing };
+        // add custom lit to the pass
+        drawingSettings.SetShaderPassName(1, litShaderTag);
         var filteringSettigs = new FilteringSettings(RenderQueueRange.opaque);
 
         context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettigs);
