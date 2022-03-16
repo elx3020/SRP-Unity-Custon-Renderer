@@ -21,7 +21,7 @@ public class MeshBall : MonoBehaviour
     {
         for (int i = 0; i < matrices.Length; i++)
         {
-            matrices[i] = Matrix4x4.TRS(Random.insideUnitSphere * 100f, Quaternion.identity, Vector3.one);
+            matrices[i] = Matrix4x4.TRS(Random.insideUnitSphere * 50f, Quaternion.identity, Vector3.one);
             colors[i] = new Vector4(Random.value, Random.value, Random.value, Random.Range(0.5f, 1f));
         }
     }

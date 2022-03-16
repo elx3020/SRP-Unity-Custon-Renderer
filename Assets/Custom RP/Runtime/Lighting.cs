@@ -31,7 +31,7 @@ public class Lighting
     // has information of what the camera sees
     CullingResults cullingResults;
 
-    public void Setup(ScriptableRenderContext context, CullingResults cullingResults)
+    public void Setup(ScriptableRenderContext context, CullingResults cullingResults, ShadowSettings shadowSettings)
     {
         this.cullingResults = cullingResults;
         lightBuffer.BeginSample(bufferName);

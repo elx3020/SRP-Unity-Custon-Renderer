@@ -4,15 +4,22 @@ public class CustomRenderPipeline : RenderPipeline
 {
 
     CameraRenderer renderer = new CameraRenderer();
+
+    // to control batching or instancing
     bool useDynamicBatching, useGPUInstancing;
 
+    // shadows data;
 
-    // activate use of SRP Batcher
+    ShadowSettings shadowSettings;
 
-    public CustomRenderPipeline(bool useDynamicBatching, bool useGPUInstancing, bool useSPRBatcher)
+
+    // Custom Render Pipeline constructor definition
+
+    public CustomRenderPipeline(bool useDynamicBatching, bool useGPUInstancing, bool useSPRBatcher, ShadowSettings shadowSettings)
     {
         this.useDynamicBatching = useDynamicBatching;
         this.useGPUInstancing = useGPUInstancing;
+        this.shadowSettings = shadowSettings;
         GraphicsSettings.useScriptableRenderPipelineBatching = useSPRBatcher;
         GraphicsSettings.lightsUseLinearIntensity = true;
     }
@@ -24,7 +31,7 @@ public class CustomRenderPipeline : RenderPipeline
     {
         foreach (Camera camera in cameras)
         {
-            renderer.Render(context, camera, useDynamicBatching, useGPUInstancing);
+            renderer.Render(context, camera, useDynamicBatching, useGPUInstancing, shadowSettings);
         }
     }
 }

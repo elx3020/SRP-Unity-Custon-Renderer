@@ -3,7 +3,11 @@
 #define CUSTOM_LIGHTING_INCLUDED
 
 float3 IncomingLight(Surface surface, Light light){
-	return saturate(dot(surface.normal,light.direction)) * light.color;
+
+	float3 lightnormal = saturate(dot(surface.normal,light.direction)) * light.color;
+
+	lightnormal =  floor(lightnormal * 5);
+	return lightnormal;
 }
 
 float3 GetLighting(Surface surface,Light light){
