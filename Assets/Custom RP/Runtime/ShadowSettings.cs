@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class ShadowSettings : MonoBehaviour
+public class ShadowSettings
 {
 
     // max distance to draw shadows

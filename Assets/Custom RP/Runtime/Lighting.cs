@@ -21,8 +21,6 @@ public class Lighting
     dirLightDirections = new Vector4[maxDirLightCount];
 
 
-
-
     // to get just one light, properties are later not arrays but float3
 
     // static int dirLightColorId = Shader.PropertyToID("_DirectionalLightColor"),
@@ -31,12 +29,16 @@ public class Lighting
     // has information of what the camera sees
     CullingResults cullingResults;
 
+    Shadows shadows = new Shadows();
+
     public void Setup(ScriptableRenderContext context, CullingResults cullingResults, ShadowSettings shadowSettings)
     {
         this.cullingResults = cullingResults;
         lightBuffer.BeginSample(bufferName);
+        shadows.Setup(context, cullingResults, shadowSettings);
         // get directional lights of the scene view
         SetupLights();
+        shadows.Render();
         lightBuffer.EndSample(bufferName);
         context.ExecuteCommandBuffer(lightBuffer);
         lightBuffer.Clear();
@@ -49,6 +51,8 @@ public class Lighting
         dirLightColors[index] = visibleLight.finalColor;
         // lights direction
         dirLightDirections[index] = -visibleLight.localToWorldMatrix.GetColumn(2);
+        // pass light to the shadow class
+        shadows.ReserveDirectionShadows(visibleLight.light, index);
 
 
 
@@ -83,8 +87,13 @@ public class Lighting
         lightBuffer.SetGlobalVectorArray(dirLightColorsId, dirLightColors);
         lightBuffer.SetGlobalVectorArray(dirLightDirectionsId, dirLightDirections);
 
-
     }
+
+    public void CleanUp()
+    {
+        shadows.Cleanup();
+    }
+
 
 
 
