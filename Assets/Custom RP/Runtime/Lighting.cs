@@ -13,12 +13,14 @@ public class Lighting
 
     static int dirLightCountId = Shader.PropertyToID("_DirectionalLightCount"),
     dirLightColorsId = Shader.PropertyToID("_DirectionalLightColors"),
-    dirLightDirectionsId = Shader.PropertyToID("_DirectionalLightDirections");
+    dirLightDirectionsId = Shader.PropertyToID("_DirectionalLightDirections"),
+    dirLightShadowDataId = Shader.PropertyToID("_DirectionalLightShadowData");
 
     // the way of storing the vectors can change in the future and use a structured buffer
 
     static Vector4[] dirLightColors = new Vector4[maxDirLightCount],
-    dirLightDirections = new Vector4[maxDirLightCount];
+    dirLightDirections = new Vector4[maxDirLightCount],
+    dirLightShadowData = new Vector4[maxDirLightCount];
 
 
     // to get just one light, properties are later not arrays but float3
@@ -38,6 +40,7 @@ public class Lighting
         shadows.Setup(context, cullingResults, shadowSettings);
         // get directional lights of the scene view
         SetupLights();
+        // get shadows
         shadows.Render();
         lightBuffer.EndSample(bufferName);
         context.ExecuteCommandBuffer(lightBuffer);
@@ -52,7 +55,7 @@ public class Lighting
         // lights direction
         dirLightDirections[index] = -visibleLight.localToWorldMatrix.GetColumn(2);
         // pass light to the shadow class
-        shadows.ReserveDirectionShadows(visibleLight.light, index);
+        dirLightShadowData[index] = shadows.ReserveDirectionShadows(visibleLight.light, index);
 
 
 
@@ -86,6 +89,7 @@ public class Lighting
         lightBuffer.SetGlobalInt(dirLightCountId, visibleLights.Length);
         lightBuffer.SetGlobalVectorArray(dirLightColorsId, dirLightColors);
         lightBuffer.SetGlobalVectorArray(dirLightDirectionsId, dirLightDirections);
+        lightBuffer.SetGlobalVectorArray(dirLightShadowDataId, dirLightShadowData);
 
     }
 

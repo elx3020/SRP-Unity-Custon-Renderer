@@ -34,6 +34,7 @@ public partial class CameraRenderer
         }
         buffer.BeginSample(SampleName);
         ExecuteBuffer();
+        // get lights and shadow
         lighting.Setup(context, cullingResults, shadowSettings);
         buffer.EndSample(SampleName);
         Setup();

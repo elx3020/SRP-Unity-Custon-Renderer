@@ -4,6 +4,7 @@
 
 #include "../ShaderLibrary/Common.hlsl"
 #include "../ShaderLibrary/Surface.hlsl"
+#include "../ShaderLibrary/Shadows.hlsl"
 #include "../ShaderLibrary/Light.hlsl"
 #include "../ShaderLibrary/Lighting.hlsl"
 
@@ -37,6 +38,7 @@ struct Attributes {
 struct Varyings {
 	// SV_position is a sematic word
     float4 positionCS : SV_POSITION;
+	float3 positionWS : VAR_POSITION;
 	float3 normalWS : VAR_NORMAL;
 	// the sematic doesn have any further meaning
 	float2 uv0 : VAR_UV0;
@@ -52,9 +54,9 @@ Varyings LitPassVertex (Attributes input) { //: SV_POSITION {
 	// set vertex data to support instancing
 	UNITY_TRANSFER_INSTANCE_ID(input, output);
 	// convert object space position of vertices to world space
-	float3 positionWS = TransformObjectToWorld(input.positionOS);
+	output.positionWS = TransformObjectToWorld(input.positionOS);
 	// convert world space position of vertices to clip space position (fragment)
-	output.positionCS = TransformWorldToHClip(positionWS);
+	output.positionCS = TransformWorldToHClip(output.positionWS);
 	// normals
 	output.normalWS = TransformObjectToWorldNormal(input.normalOS);
 
@@ -83,6 +85,7 @@ float4 LitPassFragment (Varyings input) : SV_TARGET {
 
 
 	Surface surface;
+	surface.position = input.positionWS;
 	surface.normal = normalize(input.normalWS);
 	surface.color = base.rgb;
 	surface.alpha = base.a;
